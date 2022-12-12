@@ -1,11 +1,18 @@
 <!DOCTYPE html>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
   <title>OnlineShop - Produits</title>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
   <link rel="stylesheet" type="text/css" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css">
   <link rel="stylesheet" type="text/css" href="./assets/css/style.css">
+  <script type="text/javascript" src="./assets/js/products3.js"></script>
 </head>
+
+
+
+
 <body>
   <header>
     <div class="header-container">
@@ -37,20 +44,20 @@
       <section>
         <h2>Catégories</h2>
         <div class="btn-group vertical" id="product-categories">
-          <button>Appareils photo</button>
-          <button>Consoles</button>
-          <button>Écrans</button>
-          <button>Ordinateurs</button>
-          <button class="selected">Tous les produits</button>
+          <button class="filter-btn">Appareils photo</button>
+          <button class="filter-btn">Consoles</button>
+          <button class="filter-btn">Écrans</button>
+          <button class="filter-btn">Ordinateurs</button>
+          <button class="filter-btn" class="selected">Tous les produits</button>
         </div>
       </section>
       <section>
         <h2>Classement</h2>
         <div class="btn-group vertical" id="product-criteria">
-          <button class="selected">Prix (bas-haut)</button>
-          <button>Prix (haut-bas)</button>
-          <button>Nom (A-Z)</button>
-          <button>Nom (Z-A)</button>
+          <button class="sort-btn" class="selected">Prix (bas-haut)</button>
+          <button class="sort-btn">Prix (haut-bas)</button>
+          <button class="sort-btn">Nom (A-Z)</button>
+          <button class="sort-btn">Nom (Z-A)</button>
         </div>
       </section>
     </section>
