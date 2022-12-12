@@ -1,7 +1,7 @@
 var productList = []; 
 var displayedList = []; 
 
-function loadDoc2() {
+function loadDoc() {
     var productList = []; 
     $.ajax({
         async: true, 
@@ -67,7 +67,7 @@ function filterProducts(list, category){
 }
 
 $(document).ready(function() {
-    loadDoc2(); 
+    loadDoc(); 
 });
 
 $(document).ready(function() {
@@ -113,6 +113,3 @@ $(document).ready(function() {
     })
     
 }); 
-
-
-
