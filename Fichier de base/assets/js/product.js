@@ -1,30 +1,33 @@
 var productList = []; 
 
 $.urlParam = function(name){
+    // to get id from url
 	var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
 	return results[1] || 0;
-    
 }
 
 function range(start, end) {
+    //utility function to create an Array with element from start to end
+    //python equivalent: list(range(start, end))
     return Array.apply(0, Array(end))
       .map((element, index) => index + start);
 }
 
 function displayInfoProducts(id){
+    // to display data from productList to HTML page
+    //id - 1 because first product in json is 1 while it is 0 in productList
     index = id - 1; 
     if (index in range(0, productList.length)){
+        //change innerHTML of image, name, price, description, features
         $("#product-image").attr("src", "./assets/img/" + productList[index].image);
-
         $("#product-name").html(productList[index].name);
         $("#product-desc").html(productList[index].description);
+        $("#product-price").html('Prix: <strong>'+ productList[index].price +'&thinsp;$</strong>');
     
         var featureList = ""; 
         for (let i = 0; i < productList[index].features.length; i++)
             featureList += "<li>" + productList[index].features[i] + "</li>"; 
         $("#product-features").html(featureList);
-    
-        $("#product-price").html('Prix: <strong>'+ productList[index].price +'&thinsp;$</strong>');
     }
     else{
         $('article').html('<h1>Page non trouvée!</h1>'); 
@@ -32,6 +35,7 @@ function displayInfoProducts(id){
 }
 
 $(document).ready(function () {
+    // to get productList from json file and display current product
     $.ajax({
         async: true, 
         type: "GET",
@@ -53,6 +57,11 @@ $(document).ready(function () {
 
 
 function addToLocalStorage(id) {
+    //"virtual shopping cart", to store the data when user add products to cart
+    //Bcz local storage store data in key:value pair so 
+    //key = item's name
+    //value = JSON object contain: price, quantity, and id 
+
     var currentItem = window.localStorage.getItem(productList[id].name); 
     console.log(currentItem);
     // create new item if item doesnt exist in local storage
@@ -84,13 +93,15 @@ function openDialog(message){
     });
 }
 $(document).ready(function () {
+    //to add product and quantity of products to shopping cart after user submission
+    //create dialog and fade out after 5s
+
     var currentUrl = window.location.href; 
     $("#add-to-cart-btn").click(function () {
-        $.ajax({
+        $.ajax({ //is ajax neccessary?
             async: true, 
             type: "post",
             url: currentUrl, 
-            datatype: "json",
             success: function() {
                 var id = $.urlParam('id') - 1; 
                 addToLocalStorage(id);
