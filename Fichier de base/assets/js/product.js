@@ -1,5 +1,43 @@
 var productList = []; 
 
+$(document).ready(function () {
+    // to get productList from json file and display current product
+    $.ajax({
+        async: true, 
+        type: "GET",
+        url: "./data/products.json",
+        datatype: 'json',
+        success: function(xhr) {
+            //update product list on successful get
+            productList = xhr; 
+
+            //product page must have ?id= suffix to identify the product
+            if (!window.location.href.includes("?id="))
+                window.location.assign("/product.html?id=404"); 
+
+            displayInfoProducts($.urlParam('id')); 
+        }
+    }); 
+});
+
+$(document).ready(function () {
+    //to add product and quantity of products to shopping cart after user submission
+    //create dialog and fade out after 5s
+    var currentUrl = window.location.href; 
+    $("#add-to-cart-btn").click(function () {
+        $.ajax({ //is ajax neccessary?
+            async: true, 
+            type: "post",
+            url: currentUrl, 
+            success: function() {
+                var id = $.urlParam('id') - 1; 
+                addToLocalStorage(id);
+                openDialog("Le produit a été ajouté au panier.");
+            }
+        }); 
+    });
+});
+
 $.urlParam = function(name){
     // to get id from url
 	var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
@@ -34,28 +72,6 @@ function displayInfoProducts(id){
     }
 }
 
-$(document).ready(function () {
-    // to get productList from json file and display current product
-    $.ajax({
-        async: true, 
-        type: "GET",
-        url: "./data/products.json",
-        datatype: 'json',
-        success: function(xhr) {
-            //update product list on successful get
-            productList = xhr; 
-
-            //product page must have ?id= suffix to identify the product
-            if (!window.location.href.includes("?id="))
-                window.location.assign("/product.html?id=404"); 
-
-            //
-            displayInfoProducts($.urlParam('id')); 
-        }
-    }); 
-});
-
-
 function addToLocalStorage(id) {
     //"virtual shopping cart", to store the data when user add products to cart
     //Bcz local storage store data in key:value pair so 
@@ -64,6 +80,7 @@ function addToLocalStorage(id) {
 
     var currentItem = window.localStorage.getItem(productList[id].name); 
     console.log(currentItem);
+
     // create new item if item doesnt exist in local storage
     if (currentItem == null){
         var newItem = new Object(); 
@@ -92,21 +109,3 @@ function openDialog(message){
         $("#dialog").remove();
     });
 }
-$(document).ready(function () {
-    //to add product and quantity of products to shopping cart after user submission
-    //create dialog and fade out after 5s
-
-    var currentUrl = window.location.href; 
-    $("#add-to-cart-btn").click(function () {
-        $.ajax({ //is ajax neccessary?
-            async: true, 
-            type: "post",
-            url: currentUrl, 
-            success: function() {
-                var id = $.urlParam('id') - 1; 
-                addToLocalStorage(id);
-                openDialog("Le produit a été ajouté au panier.");
-            }
-        }); 
-    });
-});
