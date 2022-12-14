@@ -1,5 +1,5 @@
 var productList = []; 
-var displayedList = []; 
+var toDisplayList = []; 
 
 function loadDoc() {
     var productList = []; 
@@ -11,6 +11,7 @@ function loadDoc() {
         success: function(xhr){
             displayList(xhr); 
             updateProductList(xhr); 
+            defaultSortAndFilter(); 
         }
     }); 
 }
@@ -39,7 +40,6 @@ function displayList(array) {
         productCell = "";
     }
     $("#products-list").html(table); 
-
 }
 
 function sortProducts(list, criteria, descending){
@@ -66,25 +66,34 @@ function filterProducts(list, category){
     return filteredList; 
 }
 
+function defaultSortAndFilter(){
+    var toDisplayList = productList; 
+    sortProducts(toDisplayList, "price", false);
+    displayList(toDisplayList); 
+
+    $(".filter-btn:contains('Tous les produits')").toggleClass("selected");
+    $(".sort-btn:contains('Prix (bas-haut)')").toggleClass("selected");
+}
+
 $(document).ready(function() {
     loadDoc(); 
 });
 
 $(document).ready(function() {
     $(".sort-btn").click(function(){
-        if (displayedList.length == 0){
-            displayedList = productList; 
+        if (toDisplayList.length == 0){
+            toDisplayList = productList; 
         }
         if (this.innerHTML.includes("Nom")){
             if(this.innerHTML.includes("A-Z"))
-                sortProducts(displayedList, "name", false);
-            else {sortProducts(displayedList, "name", true);}
+                sortProducts(toDisplayList, "name", false);
+            else {sortProducts(toDisplayList, "name", true);}
         } else {
             if(this.innerHTML.includes("bas-haut"))
-                sortProducts(displayedList, "price", false);
-            else {sortProducts(displayedList, "price", true);}
+                sortProducts(toDisplayList, "price", false);
+            else {sortProducts(toDisplayList, "price", true);}
         }
-        displayList(displayedList);
+        displayList(toDisplayList);
 
         $(".selected.sort-btn").toggleClass("selected"); 
         $(this).toggleClass("selected");
@@ -94,20 +103,26 @@ $(document).ready(function() {
 $(document).ready(function() {
     $(".filter-btn").click(function(){
         var filterCategory = "";
+
+        //match button to actual category in product list
         switch(this.innerHTML){
             case "Appareils photo": filterCategory = "cameras"; break; 
             case "Consoles": filterCategory = "consoles"; break;
             case "Écrans": filterCategory = "screens"; break; 
             case "Ordinateurs": filterCategory = "computers"; break; 
-            default: filterCategory = new RegExp(".*?"); //bug here
         }
-        displayedList = filterProducts(productList, filterCategory); 
-        displayList(displayedList);
+
+        // display list
+        if (this.innerHTML == "Tous les produits")
+            toDisplayList = productList; 
+        else
+            toDisplayList = filterProducts(productList, filterCategory); 
+        displayList(toDisplayList);
 
         // update product count
-        $('#products-count').html(displayedList.length + " produit" + (displayedList.length ? "s" : "")); 
+        $('#products-count').html(toDisplayList.length + " produit" + (toDisplayList.length ? "s" : "")); 
 
-        // update selected button
+        // de-select old button, select clicked button
         $(".selected.filter-btn").toggleClass("selected"); 
         $(this).toggleClass("selected");
     })

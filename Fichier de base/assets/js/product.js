@@ -7,13 +7,13 @@ $.urlParam = function(name){
 }
 
 function range(start, end) {
-    return Array.apply(0, Array(end - 1))
+    return Array.apply(0, Array(end))
       .map((element, index) => index + start);
 }
 
 function displayInfoProducts(id){
     index = id - 1; 
-    if (index in range(0, productList.length + 1)){
+    if (index in range(0, productList.length)){
         $("#product-image").attr("src", "./assets/img/" + productList[index].image);
 
         $("#product-name").html(productList[index].name);
@@ -38,9 +38,14 @@ $(document).ready(function () {
         url: "./data/products.json",
         datatype: 'json',
         success: function(xhr) {
+            //update product list on successful get
             productList = xhr; 
+
+            //product page must have ?id= suffix to identify the product
             if (!window.location.href.includes("?id="))
-                window.location.assign("/product.html?id=1"); 
+                window.location.assign("/product.html?id=404"); 
+
+            //
             displayInfoProducts($.urlParam('id')); 
         }
     }); 
@@ -49,6 +54,7 @@ $(document).ready(function () {
 
 function addToLocalStorage(id) {
     var currentItem = window.localStorage.getItem(productList[id].name); 
+    console.log(currentItem);
     // create new item if item doesnt exist in local storage
     if (currentItem == null){
         var newItem = new Object(); 
@@ -67,10 +73,14 @@ function addToLocalStorage(id) {
 }
 
 function openDialog(message){
+    //create dialog box
     dialogBox = '<dialog open id ="dialog">' + message + '</dialog>';
     $("article").append(dialogBox); 
+
+    // hide dialog after 5000 ms = 5s and delete to prepare for the next dialog
     $("#dialog").fadeOut(5000,function() {
         $(this).modal('hide');
+        $("#dialog").remove();
     });
 }
 $(document).ready(function () {
