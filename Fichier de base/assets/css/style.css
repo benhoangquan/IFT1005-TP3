@@ -371,3 +371,11 @@ footer {
   background-color: #eee;
   border-top: 1px solid #ccc;
 }
+
+dialog {
+  background-color: gray;
+  color: white; 
+  border-radius: 5px; 
+  position: fixed;
+  bottom: 10%; 
+}
