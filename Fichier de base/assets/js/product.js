@@ -25,16 +25,9 @@ $(document).ready(function () {
     //create dialog and fade out after 5s
     var currentUrl = window.location.href; 
     $("#add-to-cart-btn").click(function () {
-        $.ajax({ //is ajax neccessary?
-            async: true, 
-            type: "post",
-            url: currentUrl, 
-            success: function() {
-                var id = $.urlParam('id') - 1; 
-                addToLocalStorage(id);
-                openDialog("Le produit a été ajouté au panier.");
-            }
-        }); 
+        var id = $.urlParam('id') - 1; 
+        addToLocalStorage(id);
+        openDialog("Le produit a été ajouté au panier.");
     });
 });
 
