@@ -72,7 +72,6 @@ function addToLocalStorage(id) {
     //value = JSON object contain: price, quantity, and id 
 
     var currentItem = window.localStorage.getItem(productList[id].name); 
-    console.log(currentItem);
 
     // create new item if item doesnt exist in local storage
     if (currentItem == null){
@@ -93,6 +92,7 @@ function addToLocalStorage(id) {
 
 function openDialog(message){
     //create dialog box
+    $("#dialog").remove();
     dialogBox = '<dialog open id ="dialog">' + message + '</dialog>';
     $("article").append(dialogBox); 
 
