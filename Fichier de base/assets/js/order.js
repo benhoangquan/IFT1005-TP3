@@ -40,6 +40,7 @@ $(function() {
         });
     
 });
+
 // Code section to remove the cart in the local storage and also keep the first and last name and
 // the order number in the local storage
 $(function() {
@@ -63,9 +64,7 @@ $(function() {
         // Prevent the form from being submitted
         form.preventDefault();
           
-         // Remove the shopping cart from local storage 
-         // ( I dont know how to clear the shopping cart if it is multiple keys without brute forcing it for every possible product keys)
-         //localStorage.removeItem('cart');
+         // Remove the shopping cart from local storage and all past order stayed
         let orderNumber = parseInt(localStorage.getItem('orderNumber')) + 1;
         saveOrdersInLocalStorage(); 
 
@@ -82,7 +81,7 @@ $(function() {
         orderId = "Order #" + orderNumber; 
         localStorage.setItem(orderId, JSON.stringify(orderInfo));
   
-        // Save order number to localStorage
+        // Save order quantity to localStorage
         localStorage.setItem("orderNumber", orderNumber);
         
         // Redirect to the confirmation page
