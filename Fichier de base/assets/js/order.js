@@ -1,3 +1,7 @@
+//Hoang Quan TRAN - 20249088
+//Simon Thivierge - 20248484
+//Octavian Mocanu - 20157889
+
 // Wait for the DOM to be ready
 jQuery.validator.addMethod("validexpiry", function(value, element) {
     return this.optional(element) || /^((0[1-9])|(1[0-2]))\/(\d{2})$/.test(value);
