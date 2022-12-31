@@ -94,6 +94,8 @@ function addToLocalStorage(id) {
         currentItem.quantity += parseInt($("#product-quantity").val()); 
         window.localStorage.setItem(keyName, JSON.stringify(currentItem))
     }
+    // Update the header item count
+    updateShoppingListCount();
 }
 
 function openDialog(message){

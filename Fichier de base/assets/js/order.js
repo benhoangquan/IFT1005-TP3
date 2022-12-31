@@ -2,12 +2,12 @@
 //Simon Thivierge - 20248484
 //Octavian Mocanu - 20157889
 
-// Wait for the DOM to be ready
+// Custom jquery form validate rule for the credit card expiry date
 jQuery.validator.addMethod("validexpiry", function(value, element) {
     return this.optional(element) || /^((0[1-9])|(1[0-2]))\/(\d{2})$/.test(value);
   }, "La date d’expiration de votre carte de crédit est invalide.");
   
-
+// The validation rules for the form
 $(function() {
     // Initialize form validation on the order form.
     // It has the name attribute "orderForm"
