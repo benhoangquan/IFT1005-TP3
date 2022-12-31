@@ -27,6 +27,7 @@ $(document).ready(function () {
     $("#add-to-cart-btn").click(function () {
         var id = $.urlParam('id') - 1; 
         addToLocalStorage(id);
+        updateShoppingListCount(); 
         openDialog("Le produit a été ajouté au panier.");
     });
 });
