@@ -70,29 +70,34 @@ function addToLocalStorage(id) {
     //Bcz local storage store data in key:value pair so 
     //key = item's name
     //value = JSON object contain: price, quantity, and id 
-
-    var currentItem = window.localStorage.getItem(productList[id].name); 
-    console.log(currentItem);
+    var keyName = "Item #" + (id+1).toString();
+    var currentItem = window.localStorage.getItem(keyName); 
 
     // create new item if item doesnt exist in local storage
     if (currentItem == null){
         var newItem = new Object(); 
         newItem["id"] = parseInt($.urlParam('id')); 
+        newItem["name"] = productList[id].name;
         newItem["quantity"] = parseInt($("#product-quantity").val()); 
-        newItem["price"] = parseInt(productList[id].price); 
-        window.localStorage.setItem(productList[id].name, JSON.stringify(newItem));
+        newItem["price"] = parseFloat(productList[id].price); 
+        window.localStorage.setItem(keyName, JSON.stringify(newItem));
     }
 
     // update current item if it exists
     else {
         currentItem = JSON.parse(currentItem);
         currentItem.quantity += parseInt($("#product-quantity").val()); 
-        window.localStorage.setItem(productList[id].name, JSON.stringify(currentItem))
+        window.localStorage.setItem(keyName, JSON.stringify(currentItem));
+
+
     }
+    // Update the header item count
+    updateShoppingListCount();
 }
 
 function openDialog(message){
     //create dialog box
+    $("#dialog").remove();
     dialogBox = '<dialog open id ="dialog">' + message + '</dialog>';
     $("article").append(dialogBox); 
 
