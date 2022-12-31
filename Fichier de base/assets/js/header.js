@@ -1,4 +1,8 @@
 $(document).ready(function(){
+    updateShoppingListCount();
+});
+
+function updateShoppingListCount(){
     var items = {...localStorage}; 
     nbProduct = 0; 
     for (product of Object.values(items)){
@@ -12,4 +16,4 @@ $(document).ready(function(){
         $('.count').hide();
     else
         $('.count').show();
-});
+}

@@ -69,15 +69,19 @@ $(function() {
         // Get the first name and last name from the form
         const firstName = $('#first-name').val();
         const lastName = $('#last-name').val();
+
+        let orderInfo = new Object(); 
+        orderInfo["firstName"] = firstName;
+        orderInfo["lastName"] = lastName; 
+        orderInfo["orderNumber"] = orderNumber;
+
+        // Save the first name, last name, and order number to local storage
+        orderId = "Order #" + orderNumber; 
+        localStorage.setItem(orderId, JSON.stringify(orderInfo));
   
         // Increment the order number
         orderNumber++;
-  
-        // Save the first name, last name, and order number to local storage
-        localStorage.setItem('firstName', firstName);
-        localStorage.setItem('lastName', lastName);
-        localStorage.setItem('orderNumber', orderNumber);
-  
+    
         // Redirect to the confirmation page
         window.location.href = './confirmation.html';
     });

@@ -20,15 +20,25 @@ $(document).ready(function(){
 });
 
 $(document).ready(function(){
-    $("button").prop("disabled", false); 
-    
     $('.remove-quantity-button').click(function(){
         let classes = getClasses(this); 
         let id = classes[1].toString();
 
-        let adjustedItem = adjustQuantityItem(id, "remove"); 
-        let shoppingCartLine = displayProduct(adjustedItem); 
-        $("#" + id).replaceWith(shoppingCartLine);
+        let adjustedItem = adjustQuantityItem(id, "remove")
+        $(".quantity" + id).html(adjustedItem.quantity);
+
+        let priceItem = (adjustedItem.quantity * adjustedItem.price).toFixed(2).toString() + '&thinsp;$';
+        $(".priceItem" + id).html(priceItem);
+
+        if (adjustedItem.quantity == 1){
+            $(".remove-quantity-button").prop("disabled", true);
+        }
+        else if (adjustedItem.quantity > 1){
+            $(".remove-quantity-button").prop("disabled", false);
+        }
+
+        calculatePriceTotal(getItemsFromLocalStorage()); 
+
     }); 
 })
 
@@ -38,10 +48,75 @@ $(document).ready(function(){
         let id = classes[1].toString();
 
         let adjustedItem = adjustQuantityItem(id, "add"); 
-        let shoppingCartLine = displayProduct(adjustedItem); 
-        $("#" + id).replaceWith(shoppingCartLine);
+        $(".quantity" + id).html(adjustedItem.quantity);
+
+        let priceItem = (adjustedItem.quantity * adjustedItem.price).toFixed(2).toString() + '&thinsp;$';
+        $(".priceItem" + id).html(priceItem);
+
+        if (adjustedItem.quantity > 1){
+            $(".remove-quantity-button").prop("disabled", false);
+        }
+
+        calculatePriceTotal(getItemsFromLocalStorage()); 
     }); 
 })
+
+$(document).ready(function(){
+    //remove html element
+    $(".remove-all-button").click(function(){
+        answer = confirmationBox("Voulez-vous supprimer tous les produits du panier?");
+        if (answer){
+            $(this).parents("tr").remove(); 
+            let itemId = "Item #" + $(this).parents("tr").attr('id');
+            localStorage.removeItem(itemId);
+            cartList = getItemsFromLocalStorage()
+            if (cartList.length == 0)
+                showEmptyCart(); 
+        }
+    })
+})
+
+$(document).ready(function(){
+    $("#remove-all-items-button").click(function(){
+        let answer = confirmationBox("Voulez-vous supprimer ce produit du panier?"); 
+        //save list of orders bcz we want to clear items
+        if (answer){
+            let items = {...localStorage}; 
+            let orders = [];
+            for (product of Object.values(items)){
+                let obj = JSON.parse(product); 
+                if (obj.hasOwnProperty("firstName"))
+                    orders.push(obj);
+            }
+            //clear localStorage
+            localStorage.clear(); 
+    
+            // rewrite to localStorage order List
+            for (let order of orders){
+                let orderId = "Order #" + order.orderNumber;
+                localStorage.setItem(orderId, JSON.stringify(order));
+            }
+    
+            //redisplay the list
+            displayShoppingCart(); 
+        }
+
+    })
+})
+
+
+function displayShoppingCart(){
+    cartList = getItemsFromLocalStorage(); 
+    sortProducts(cartList, "name", false); 
+    if (cartList.length == 0){
+        showEmptyCart();
+    } 
+    else{
+        displayProducts(cartList);
+        // updateShoppingListCount(); 
+        calculatePriceTotal(cartList);
+    }
+}
 
 function sortProducts(list, criteria, descending){
     //sort inputed list with 2 criteria and (criteria descending or ascending)
@@ -68,7 +143,7 @@ function displayProduct(obj){
     let shoppingCartLine = ""; 
 
     shoppingCartLine +='<tr id="'+ id +'">'; 
-    shoppingCartLine +='<td><button title="Supprimer" class="remove-all-button"'+ id + '><i class="fa fa-times"></i></button></td>'; 
+    shoppingCartLine +='<td><button title="Supprimer" class="remove-all-button '+ id + '"><i class="fa fa-times"></i></button></td>'; 
     shoppingCartLine +='<td><a href="./product.html?id='+id+'">' + name +'</a></td>';
     shoppingCartLine +='<td>' + price + '&thinsp;$</td>';
     shoppingCartLine +='<td>';
@@ -76,14 +151,14 @@ function displayProduct(obj){
     shoppingCartLine +='<div class="col">';
     shoppingCartLine +='<button class="remove-quantity-button '+ id +'" title="Retirer"><i class="fa fa-minus"></i></button>';
     shoppingCartLine +='</div>';
-    shoppingCartLine +='<div class="quantity">'+ quantity +'</div>';
+    shoppingCartLine +='<div class="quantity' + id +'">'+ quantity +'</div>';
     shoppingCartLine +='<div class="col">';
     shoppingCartLine +='<button class="add-quantity-button '+ id +'" title="Ajouter"><i class="fa fa-plus"></i></button>';
     shoppingCartLine +='</div>';
     shoppingCartLine +='</div>';
     shoppingCartLine +='</td>'; 
 
-    shoppingCartLine +='<td>'+ priceTotal.toString() +'&thinsp;$</td>'; 
+    shoppingCartLine +='<td class="priceItem'+ id +'">'+ priceTotal.toString() +'&thinsp;$</td>'; 
     shoppingCartLine +='</tr>';
 
     return shoppingCartLine;
@@ -101,7 +176,7 @@ function calculatePriceTotal(list){
     for (let item of list){
         priceTotal += Number(item.price) * Number(item.quantity);
     }
-    $(".shopping-cart-total > strong").html(priceTotal.toString()+'&thinsp;$')
+    $(".shopping-cart-total > strong").html(priceTotal.toFixed(2).toString()+'&thinsp;$')
 }
 
 function showEmptyCart(){
@@ -125,4 +200,21 @@ function adjustQuantityItem(id, fn){
         item.quantity -= 1; 
     localStorage.setItem(idLocalStorage, JSON.stringify(item)); 
     return item; 
+}
+
+function getItemsFromLocalStorage(){
+    let items = {...localStorage}; 
+    let products = []; 
+
+    for (product of Object.values(items)){
+        objProduct = JSON.parse(product); 
+        if (objProduct.hasOwnProperty("id"))
+            products.push(objProduct); 
+    }
+    return products;
+}
+
+function confirmationBox(message){
+    let answer = window.confirm(message); 
+    return answer; 
 }
