@@ -1,3 +1,4 @@
+// Par Simon Thivierge matricule: 20248484
 $(document).ready(function(){
     updateShoppingListCount();
 });
