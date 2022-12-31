@@ -87,9 +87,7 @@ function addToLocalStorage(id) {
     else {
         currentItem = JSON.parse(currentItem);
         currentItem.quantity += parseInt($("#product-quantity").val()); 
-        window.localStorage.setItem(keyName, JSON.stringify(currentItem));
-
-
+        window.localStorage.setItem(keyName, JSON.stringify(currentItem))
     }
     // Update the header item count
     updateShoppingListCount();

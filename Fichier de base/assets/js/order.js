@@ -1,4 +1,3 @@
-
 // Wait for the DOM to be ready
 jQuery.validator.addMethod("validexpiry", function(value, element) {
     return this.optional(element) || /^((0[1-9])|(1[0-2]))\/(\d{2})$/.test(value);
@@ -49,11 +48,13 @@ $(function() {
     // Check if the order number is saved in local storage
     if (localStorage.getItem('orderNumber')) {
       // If it is, retrieve the value from local storage
-      orderNumber = parseInt(localStorage.getItem('orderNumber'));  // Convert the value to a number
-    } else {
+        orderNumber = parseInt(localStorage.getItem('orderNumber'));  // Convert the value to a number
+    } 
+    else {
       // If it is not, initialize the order number to 0
-      orderNumber = 0;
+        localStorage.setItem('orderNumber', 0)
     }
+    
 
     $('#orderForm').on('submit', function(form) {
         if (!$(this).valid()) {
@@ -65,7 +66,9 @@ $(function() {
          // Remove the shopping cart from local storage 
          // ( I dont know how to clear the shopping cart if it is multiple keys without brute forcing it for every possible product keys)
          //localStorage.removeItem('cart');
-        localStorage.clear();
+        let orderNumber = parseInt(localStorage.getItem('orderNumber')) + 1;
+        saveOrdersInLocalStorage(); 
+
         // Get the first name and last name from the form
         const firstName = $('#first-name').val();
         const lastName = $('#last-name').val();
@@ -79,10 +82,10 @@ $(function() {
         orderId = "Order #" + orderNumber; 
         localStorage.setItem(orderId, JSON.stringify(orderInfo));
   
-        // Increment the order number
-        orderNumber++;
-    
+        // Save order number to localStorage
+        localStorage.setItem("orderNumber", orderNumber);
+        
         // Redirect to the confirmation page
         window.location.href = './confirmation.html';
-    });
+    });    
   });
