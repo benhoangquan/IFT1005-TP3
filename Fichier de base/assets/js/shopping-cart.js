@@ -16,48 +16,54 @@ $(document).ready(function(){
     else{
         displayProducts(cartList);
         calculatePriceTotal(cartList);
+        disableDecrement(); 
     }
 });
 
 $(document).ready(function(){
     $('.remove-quantity-button').click(function(){
+        $(this).prop("disabled", false);
         let classes = getClasses(this); 
         let id = classes[1].toString();
 
         let adjustedItem = adjustQuantityItem(id, "remove")
-        $(".quantity" + id).html(adjustedItem.quantity);
+        $(".quantity." + id).html(adjustedItem.quantity);
 
         let priceItem = (adjustedItem.quantity * adjustedItem.price).toFixed(2).toString() + '&thinsp;$';
-        $(".priceItem" + id).html(priceItem);
+        $(".priceItem." + id).html(priceItem);
 
         if (adjustedItem.quantity == 1){
-            $(".remove-quantity-button").prop("disabled", true);
+            $(this).prop("disabled", true);
         }
         else if (adjustedItem.quantity > 1){
-            $(".remove-quantity-button").prop("disabled", false);
+            $(this).prop("disabled", false);
         }
 
         calculatePriceTotal(getItemsFromLocalStorage()); 
-
+        // Update the header item count
+        updateShoppingListCount();
     }); 
 })
 
 $(document).ready(function(){
     $('.add-quantity-button').click(function(){
+        $(this).prop("disabled", false);
         let classes = getClasses(this); 
         let id = classes[1].toString();
 
         let adjustedItem = adjustQuantityItem(id, "add"); 
-        $(".quantity" + id).html(adjustedItem.quantity);
+        $(".quantity." + id).html(adjustedItem.quantity);
 
         let priceItem = (adjustedItem.quantity * adjustedItem.price).toFixed(2).toString() + '&thinsp;$';
-        $(".priceItem" + id).html(priceItem);
+        $(".priceItem." + id).html(priceItem);
 
         if (adjustedItem.quantity > 1){
-            $(".remove-quantity-button").prop("disabled", false);
+            $(".remove-quantity-button."+id).prop("disabled", false);
         }
 
         calculatePriceTotal(getItemsFromLocalStorage()); 
+        // Update the header item count
+        updateShoppingListCount();
     }); 
 })
 
@@ -83,9 +89,10 @@ $(document).ready(function(){
         if (answer){
             saveOrdersInLocalStorage();
             //redisplay the list
-            displayShoppingCart(); 
+            displayShoppingCart();
+            // Update header item count
+            updateShoppingListCount(); 
         }
-
     })
 })
 
@@ -97,7 +104,6 @@ function displayShoppingCart(){
     } 
     else{
         displayProducts(cartList);
-        // updateShoppingListCount(); 
         calculatePriceTotal(cartList);
     }
 }
@@ -135,14 +141,14 @@ function displayProduct(obj){
     shoppingCartLine +='<div class="col">';
     shoppingCartLine +='<button class="remove-quantity-button '+ id +'" title="Retirer"><i class="fa fa-minus"></i></button>';
     shoppingCartLine +='</div>';
-    shoppingCartLine +='<div class="quantity' + id +'">'+ quantity +'</div>';
+    shoppingCartLine +='<div class="quantity ' + id +'">'+ quantity +'</div>';
     shoppingCartLine +='<div class="col">';
     shoppingCartLine +='<button class="add-quantity-button '+ id +'" title="Ajouter"><i class="fa fa-plus"></i></button>';
     shoppingCartLine +='</div>';
     shoppingCartLine +='</div>';
     shoppingCartLine +='</td>'; 
 
-    shoppingCartLine +='<td class="priceItem'+ id +'">'+ priceTotal.toString() +'&thinsp;$</td>'; 
+    shoppingCartLine +='<td class="priceItem '+ id +'">'+ priceTotal.toString() +'&thinsp;$</td>'; 
     shoppingCartLine +='</tr>';
 
     return shoppingCartLine;
@@ -203,6 +209,12 @@ function confirmationBox(message){
     return answer; 
 }
 
+function getId(selector){
+    let classes = getClasses(selector); 
+    let id = classes[1].toString();
+    return id; 
+}
+
 function saveOrdersInLocalStorage(){
     let items = {...localStorage}; 
     let orders = [];
@@ -219,4 +231,13 @@ function saveOrdersInLocalStorage(){
         let orderId = "Order #" + order.orderNumber;
         localStorage.setItem(orderId, JSON.stringify(order));
     }
+}
+
+function disableDecrement(){
+    $(".quantity").each(function(){
+        if ($(this).html() == 1){
+            let id = getId(this); 
+            $(".remove-quantity-button."+id).prop("disabled", true);
+        }
+    })
 }
