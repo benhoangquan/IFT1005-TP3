@@ -81,29 +81,13 @@ $(document).ready(function(){
         let answer = confirmationBox("Voulez-vous supprimer ce produit du panier?"); 
         //save list of orders bcz we want to clear items
         if (answer){
-            let items = {...localStorage}; 
-            let orders = [];
-            for (product of Object.values(items)){
-                let obj = JSON.parse(product); 
-                if (obj.hasOwnProperty("firstName"))
-                    orders.push(obj);
-            }
-            //clear localStorage
-            localStorage.clear(); 
-    
-            // rewrite to localStorage order List
-            for (let order of orders){
-                let orderId = "Order #" + order.orderNumber;
-                localStorage.setItem(orderId, JSON.stringify(order));
-            }
-    
+            saveOrdersInLocalStorage();
             //redisplay the list
             displayShoppingCart(); 
         }
 
     })
 })
-
 
 function displayShoppingCart(){
     cartList = getItemsFromLocalStorage(); 
@@ -217,4 +201,22 @@ function getItemsFromLocalStorage(){
 function confirmationBox(message){
     let answer = window.confirm(message); 
     return answer; 
+}
+
+function saveOrdersInLocalStorage(){
+    let items = {...localStorage}; 
+    let orders = [];
+    for (product of Object.values(items)){
+        let obj = JSON.parse(product); 
+        if (obj.hasOwnProperty("firstName"))
+            orders.push(obj);
+    }
+    //clear localStorage
+    localStorage.clear(); 
+
+    // rewrite to localStorage order List
+    for (let order of orders){
+        let orderId = "Order #" + order.orderNumber;
+        localStorage.setItem(orderId, JSON.stringify(order));
+    }
 }
